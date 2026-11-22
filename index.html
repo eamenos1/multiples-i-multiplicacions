@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Múltiples i Multiplicacions · Fins a la taula del 6</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f3ff;
+            background-image: radial-gradient(#ddd6fe 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        h1, h2, h3, .font-display {
+            font-family: 'Fredoka', sans-serif;
+        }
+        .card-hover {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.15);
+        }
+        .btn-press:active {
+            transform: scale(0.97);
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+        .animate-shake {
+            animation: shake 0.3s ease-in-out;
+        }
+        @keyframes pop {
+            0% { transform: scale(0.95); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: pop 0.25s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col text-slate-800">
+
+    <!-- Capçalera -->
+    <header class="bg-violet-600 text-white shadow-lg sticky top-0 z-30">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="goHome()">
+                <div class="bg-white text-violet-600 p-2 rounded-xl font-display font-bold text-xl shadow-sm">
+                    ✖️ MatesTaules
+                </div>
+                <div>
+                    <h1 class="font-display font-bold text-lg sm:text-xl leading-tight">Múltiples i Multiplicacions</h1>
+                    <p class="text-violet-200 text-xs hidden sm:block">Fins a la taula del 6 · Exemples Infinits</p>
+                </div>
+            </div>
+
+            <!-- Marcador -->
+            <div class="flex items-center gap-3 sm:gap-4 bg-violet-700/80 px-4 py-1.5 rounded-2xl border border-violet-500/50">
+                <div class="flex items-center gap-1.5" title="Punts totals">
+                    <span class="text-yellow-300 text-lg">⭐</span>
+                    <span id="score-display" class="font-display font-bold text-lg">0</span>
+                </div>
+                <div class="h-4 w-px bg-violet-500"></div>
+                <div class="flex items-center gap-1.5" title="Ratxa d'encerts">
+                    <span class="text-orange-400 text-lg">🔥</span>
+                    <span id="streak-display" class="font-display font-bold text-lg">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contingut Principal -->
+    <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-6 sm:py-8">
+
+        <!-- MENÚ PRINCIPAL -->
+        <section id="menu-view" class="space-y-8 animate-pop">
+            <div class="text-center max-w-2xl mx-auto space-y-2">
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-800">Domina les taules fins al 6!</h2>
+                <p class="text-slate-600 text-sm sm:text-base">Practica els múltiples i el càlcul de multiplicacions d'una i dues xifres. Els exercicis es regeneren sense parar!</p>
+            </div>
+
+            <!-- Bloc 1: Múltiples -->
+            <div class="space-y-4">
+                <div class="flex items-center gap-2 border-b-2 border-violet-200 pb-2">
+                    <span class="bg-violet-100 text-violet-700 p-1.5 rounded-lg text-lg">🔢</span>
+                    <h3 class="text-xl font-bold text-violet-900">1. Treball amb Múltiples (Taules del 2 al 6)</h3>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Joc 1.1: Escriure múltiples -->
+                    <button onclick="startGame('write_multiples')" class="card-hover btn-press bg-white p-5 rounded-2xl shadow-sm border-2 border-slate-100 hover:border-violet-400 text-left flex flex-col justify-between group">
+                        <div>
+                            <div class="w-10 h-10 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center text-xl mb-3 group-hover:scale-110 transition-transform">✍️</div>
+                            <h4 class="font-display font-bold text-lg text-slate-800 mb-1">Escriure Múltiples</h4>
+                            <p class="text-sm text-slate-500">Escriu els primers múltiples o completa sèries de nombres de les taules del 2 al 6.</p>
+                        </div>
+                        <span class="mt-4 inline-flex items-center text-xs font-semibold text-violet-600">Començar →</span>
+                    </button>
+
+                    <!-- Joc 1.2: Identificar múltiples -->
+                    <button onclick="startGame('identify_multiples')" class="card-hover btn-press bg-white p-5 rounded-2xl shadow-sm border-2 border-slate-100 hover:border-fuchsia-400 text-left flex flex-col justify-between group">
+                        <div>
+                            <div class="w-10 h-10 rounded-xl bg-fuchsia-100 text-fuchsia-600 flex items-center justify-center text-xl mb-3 group-hover:scale-110 transition-transform">🎯</div>
+                            <h4 class="font-display font-bold text-lg text-slate-800 mb-1">Identificar Múltiples</h4>
+                            <p class="text-sm text-slate-500">Descobreix i marca dins d'una graella quins nombres són múltiples del nombre indicat (fins al 6).</p>
+                        </div>
+                        <span class="mt-4 inline-flex items-center text-xs font-semibold text-fuchsia-600">Començar →</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bloc 2: Multiplicacions -->
+            <div class="space-y-4">
+                <div class="flex items-center gap-2 border-b-2 border-sky-200 pb-2">
+                    <span class="bg-sky-100 text-sky-700 p-1.5 rounded-lg text-lg">⚡</span>
+                    <h3 class="text-xl font-bold text-sky-900">2. Càlcul de Multiplicacions (Taules fins al 6)</h3>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Joc 2.1: Multiplicacions d'1 xifra ràpides -->
+                    <button onclick="startGame('mult_one_digit')" class="card-hover btn-press bg-white p-5 rounded-2xl shadow-sm border-2 border-slate-100 hover:border-sky-400 text-left flex flex-col justify-between group">
+                        <div>
+                            <div class="w-10 h-10 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center text-xl mb-3 group-hover:scale-110 transition-transform">🚀</div>
+                            <h4 class="font-display font-bold text-lg text-slate-800 mb-1">Multiplicacions Ràpides (1 xifra)</h4>
+                            <p class="text-sm text-slate-500">Resol multiplicacions senzilles i ràpides amb factors fins al 6 per agafar agilitat mental.</p>
+                        </div>
+                        <span class="mt-4 inline-flex items-center text-xs font-semibold text-sky-600">Començar →</span>
+                    </button>
+
+                    <!-- Joc 2.2: Multiplicacions de 2 xifres -->
+                    <button onclick="startGame('mult_two_digits')" class="card-hover btn-press bg-white p-5 rounded-2xl shadow-sm border-2 border-slate-100 hover:border-amber-400 text-left flex flex-col justify-between group">
+                        <div>
+                            <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl mb-3 group-hover:scale-110 transition-transform">🧮</div>
+                            <h4 class="font-display font-bold text-lg text-slate-800 mb-1">Multiplicacions de Dues Xifres</h4>
+                            <p class="text-sm text-slate-500">Multiplica nombres de 2 xifres (formats amb xifres fins al 6) per un nombre fins al 6.</p>
+                        </div>
+                        <span class="mt-4 inline-flex items-center text-xs font-semibold text-amber-600">Començar →</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ÀREA DE JOC -->
+        <section id="game-view" class="hidden max-w-3xl mx-auto animate-pop">
+            <!-- Barra superior del joc -->
+            <div class="flex items-center justify-between mb-4">
+                <button onclick="goHome()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium text-sm shadow-sm border border-slate-200 transition-colors">
+                    ← Tornar al menú
+                </button>
+                <span id="game-badge" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-violet-100 text-violet-700">
+                    Categoria
+                </span>
+            </div>
+
+            <!-- Targeta del Repte -->
+            <div class="bg-white rounded-3xl shadow-md border border-slate-200/80 overflow-hidden">
+                <!-- Capçalera de la pregunta -->
+                <div class="bg-slate-50 border-b border-slate-100 px-6 py-4 flex items-center justify-between">
+                    <h3 id="game-title" class="font-display font-bold text-xl text-slate-800">Títol del joc</h3>
+                    <button onclick="toggleHint()" id="hint-btn" class="text-xs font-semibold text-violet-700 hover:text-violet-900 bg-violet-50 hover:bg-violet-100 px-3 py-1.5 rounded-lg transition-colors">
+                        💡 Pista / Truc
+                    </button>
+                </div>
+
+                <!-- Caixa d'ajuda desplegable -->
+                <div id="hint-box" class="hidden bg-amber-50 border-b border-amber-200/60 px-6 py-3 text-sm text-amber-900">
+                    <p id="hint-text"></p>
+                </div>
+
+                <!-- Cos de la pregunta -->
+                <div class="p-6 sm:p-8 space-y-6">
+                    <div id="question-container" class="space-y-4">
+                        <!-- S'omple dinàmicament -->
+                    </div>
+
+                    <!-- Zona de resposta -->
+                    <div id="answer-container" class="space-y-4">
+                        <!-- S'omple dinàmicament -->
+                    </div>
+
+                    <!-- Zona de feedback -->
+                    <div id="feedback-box" class="hidden rounded-2xl p-4 text-sm sm:text-base font-medium flex items-start gap-3">
+                        <span id="feedback-icon" class="text-2xl"></span>
+                        <div class="space-y-1 flex-grow">
+                            <p id="feedback-title" class="font-bold"></p>
+                            <p id="feedback-explanation" class="text-xs sm:text-sm opacity-90"></p>
+                        </div>
+                    </div>
+
+                    <!-- Botons d'acció -->
+                    <div class="pt-2 flex flex-wrap items-center justify-end gap-3">
+                        <button id="check-btn" onclick="checkAnswer()" class="w-full sm:w-auto px-6 py-3 bg-violet-600 hover:bg-violet-700 text-white font-display font-bold rounded-xl shadow-md hover:shadow-lg transition-all btn-press">
+                            Comprova la resposta
+                        </button>
+                        <button id="next-btn" onclick="nextQuestion()" class="hidden w-full sm:w-auto px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-display font-bold rounded-xl shadow-md hover:shadow-lg transition-all btn-press">
+                            Següent exemple →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Peu de pàgina -->
+    <footer class="text-center py-4 text-xs text-slate-400">
+        Recurs interactiu de Matemàtiques · Múltiples i Multiplicacions fins a la taula del 6
+    </footer>
+
+    <script>
+        // --- ESTAT GLOBAL DE L'APLICACIÓ ---
+        let state = {
+            score: 0,
+            streak: 0,
+            currentGame: null,
+            currentQuestion: null,
+            answered: false,
+            selectedChips: new Set()
+        };
+
+        // --- UTILITATS ---
+        function randInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function pickRandom(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        // Parseja una llista de nombres separats per comes, espais o guions i els ordena sense duplicats
+        function parseNumberList(str) {
+            const matches = str.match(/\d+/g);
+            if (!matches) return [];
+            const nums = matches.map(m => parseInt(m, 10));
+            return Array.from(new Set(nums)).sort((a, b) => a - b);
+        }
+
+        function arraysEqual(a, b) {
+            if (a.length !== b.length) return false;
+            for (let i = 0; i < a.length; i++) {
+                if (a[i] !== b[i]) return false;
+            }
+            return true;
+        }
+
+        // --- NAVEGACIÓ I UI ---
+        function updateScoreUI() {
+            document.getElementById('score-display').textContent = state.score;
+            document.getElementById('streak-display').textContent = state.streak;
+        }
+
+        function goHome() {
+            document.getElementById('game-view').classList.add('hidden');
+            document.getElementById('menu-view').classList.remove('hidden');
+            state.currentGame = null;
+        }
+
+        function toggleHint() {
+            const box = document.getElementById('hint-box');
+            box.classList.toggle('hidden');
+        }
+
+        function startGame(gameId) {
+            state.currentGame = gameId;
+            document.getElementById('menu-view').classList.add('hidden');
+            document.getElementById('game-view').classList.remove('hidden');
+            document.getElementById('hint-box').classList.add('hidden');
+            nextQuestion();
+        }
+
+        function nextQuestion() {
+            state.answered = false;
+            state.selectedChips = new Set();
+            document.getElementById('feedback-box').classList.add('hidden');
+            document.getElementById('check-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+
+            const generator = gameGenerators[state.currentGame];
+            state.currentQuestion = generator();
+            renderQuestion(state.currentQuestion);
+        }
+
+        // --- GENERADORS D'ACTIVITATS INFINITES (FINS A LA TAULA DEL 6) ---
+        const gameGenerators = {
+            // 1. Escriure múltiples (taules del 2 al 6)
+            write_multiples: () => {
+                const base = randInt(2, 6);
+                const count = pickRandom([4, 5, 6]);
+                const multiples = [];
+                for (let i = 1; i <= count; i++) {
+                    multiples.push(base * i);
+                }
+
+                return {
+                    badge: "Múltiples",
+                    title: "Escriure Múltiples",
+                    hint: `Ves sumant ${base} cada vegada, o pensa en la taula del ${base}: ${base}×1, ${base}×2, ${base}×3... fins a tenir-ne ${count}.`,
+                    prompt: `Escriu els <strong>${count} primers múltiples</strong> del nombre:`,
+                    highlight: `${base}`,
+                    type: 'list_input',
+                    placeholder: `Ex: ${base}, ${base * 2}, ...`,
+                    correctList: multiples,
+                    explanation: `Els ${count} primers múltiples de ${base} són: ${multiples.join(', ')}.`
+                };
+            },
+
+            // 2. Identificar múltiples (taules del 2 al 6, fins a base * 10)
+            identify_multiples: () => {
+                const base = randInt(2, 6);
+                // Múltiples dins la taula del 1 al 10
+                const allTableMults = [];
+                for (let i = 1; i <= 10; i++) {
+                    allTableMults.push(base * i);
+                }
+
+                // Triem 3 o 4 múltiples reals per posar a la graella
+                const shuffledMults = [...allTableMults].sort(() => Math.random() - 0.5);
+                const targetMults = shuffledMults.slice(0, pickRandom([3, 4])).sort((a, b) => a - b);
+
+                // Afegim nombres que NO siguin múltiples de base fins a tenir 8 targetes
+                const candidates = new Set(targetMults);
+                while (candidates.size < 8) {
+                    const fake = randInt(2, base * 10);
+                    if (fake % base !== 0) {
+                        candidates.add(fake);
+                    }
+                }
+
+                const gridNumbers = Array.from(candidates).sort((a, b) => a - b);
+
+                return {
+                    badge: "Múltiples",
+                    title: "Identificar Múltiples",
+                    hint: `Un nombre és múltiple de ${base} si apareix com a resultat a la taula de multiplicar del ${base}.`,
+                    prompt: `Marca <strong>tots els nombres</strong> de la graella que siguin <strong>múltiples de ${base}</strong>:`,
+                    highlight: `Múltiples de ${base}`,
+                    type: 'multi_chip',
+                    chips: gridNumbers,
+                    correctList: targetMults,
+                    explanation: `D'aquests nombres, els que són a la taula del ${base} (múltiples de ${base}) són: ${targetMults.join(', ')}.`
+                };
+            },
+
+            // 3. Multiplicacions d'una xifra senzilles i ràpides (factors fins al 6)
+            mult_one_digit: () => {
+                const a = randInt(1, 6);
+                const b = randInt(1, 6);
+                const ans = a * b;
+
+                return {
+                    badge: "Càlcul Ràpid",
+                    title: "Multiplicacions d'una xifra",
+                    hint: `Pensa en la taula del ${a} o del ${b}: sumar ${a} vegades el ${b} és el mateix que sumar ${b} vegades el ${a}.`,
+                    prompt: `Calcula ràpidament aquesta multiplicació:`,
+                    highlight: `${a} × ${b} = ?`,
+                    type: 'single_number',
+                    placeholder: 'Resultat...',
+                    correctAnswer: ans.toString(),
+                    explanation: `${a} × ${b} = ${ans}.`
+                };
+            },
+
+            // 4. Multiplicacions de dues xifres (totes les xifres i multiplicador fins al 6)
+            mult_two_digits: () => {
+                // Generem un nombre de 2 xifres on les desenes són entre 1 i 6 i les unitats entre 0 i 6
+                // Així garantim que totes les multiplicacions parcials pertanyen com a màxim a la taula del 6!
+                const tens = randInt(1, 6);
+                const units = randInt(0, 6);
+                const twoDigitNum = tens * 10 + units;
+                const multiplier = randInt(2, 6);
+                const ans = twoDigitNum * multiplier;
+
+                const unitsProd = units * multiplier;
+                const tensProd = (tens * 10) * multiplier;
+
+                return {
+                    badge: "Multiplicació de 2 xifres",
+                    title: "Multiplica un nombre de dues xifres",
+                    hint: `Multiplica primer les unitats (${units} × ${multiplier} = ${unitsProd}) i després les desenes (${tens} × ${multiplier} = ${tens * multiplier}), recordant d'afegir el que t'emportes si passes de 9!`,
+                    prompt: `Resol aquesta multiplicació:`,
+                    highlightVertical: { top: twoDigitNum, bottom: multiplier },
+                    type: 'single_number',
+                    placeholder: 'Escriu el resultat...',
+                    correctAnswer: ans.toString(),
+                    explanation: `Descomponent el ${twoDigitNum} en ${tens * 10} + ${units}: (${tens * 10} × ${multiplier}) + (${units} × ${multiplier}) = ${tensProd} + ${unitsProd} = ${ans}.`
+                };
+            }
+        };
+
+        // --- RENDERITZAT DE PREGUNTES I VALIDACIÓ ---
+        function renderQuestion(q) {
+            document.getElementById('game-badge').textContent = q.badge;
+            document.getElementById('game-title').textContent = q.title;
+            document.getElementById('hint-text').textContent = q.hint;
+
+            const qContainer = document.getElementById('question-container');
+            let html = `<p class="text-base sm:text-lg text-slate-700 font-medium leading-relaxed">${q.prompt}</p>`;
+
+            if (q.highlight) {
+                html += `<div class="bg-violet-50/80 border-2 border-violet-100 rounded-2xl p-4 sm:p-6 text-center">
+                            <span class="font-display font-bold text-3xl sm:text-4xl text-violet-950 tracking-wide break-words">${q.highlight}</span>
+                         </div>`;
+            } else if (q.highlightVertical) {
+                html += `<div class="bg-amber-50/70 border-2 border-amber-200/80 rounded-2xl p-5 flex justify-center">
+                            <div class="inline-flex flex-col items-end font-display font-bold text-3xl sm:text-4xl text-slate-800 tracking-widest px-6">
+                                <span>${q.highlightVertical.top}</span>
+                                <div class="flex items-center gap-3 border-b-4 border-slate-800 pb-1.5 w-full justify-between">
+                                    <span class="text-amber-600 text-2xl">×</span>
+                                    <span>${q.highlightVertical.bottom}</span>
+                                </div>
+                            </div>
+                         </div>`;
+            }
+            qContainer.innerHTML = html;
+
+            const aContainer = document.getElementById('answer-container');
+
+            if (q.type === 'list_input') {
+                aContainer.innerHTML = `
+                    <div>
+                        <label for="list-input" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+                            Escriu els nombres separats per comes (ex: 3, 6, 9):
+                        </label>
+                        <input type="text" id="list-input" autocomplete="off" placeholder="${q.placeholder}" 
+                            class="w-full px-4 py-3.5 text-lg sm:text-xl font-display font-semibold text-slate-800 bg-slate-50 border-2 border-slate-300 rounded-xl focus:outline-none focus:border-violet-500 focus:bg-white transition-colors"
+                            onkeydown="if(event.key === 'Enter') { state.answered ? nextQuestion() : checkAnswer(); }">
+                    </div>
+                `;
+                setTimeout(() => document.getElementById('list-input')?.focus(), 50);
+
+            } else if (q.type === 'multi_chip') {
+                aContainer.innerHTML = `
+                    <div>
+                        <p class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">
+                            Toca tots els nombres que siguin múltiples:
+                        </p>
+                        <div class="grid grid-cols-4 gap-3">
+                            ${q.chips.map(num => `
+                                <button type="button" onclick="toggleChip(${num}, this)" data-num="${num}"
+                                    class="chip-btn py-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-violet-400 font-display font-bold text-xl sm:text-2xl text-slate-700 transition-all btn-press">
+                                    ${num}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+
+            } else if (q.type === 'single_number') {
+                aContainer.innerHTML = `
+                    <div>
+                        <label for="number-input" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+                            Escriu el resultat:
+                        </label>
+                        <input type="number" inputmode="numeric" id="number-input" autocomplete="off" placeholder="${q.placeholder}" 
+                            class="w-full px-4 py-3.5 text-xl sm:text-2xl font-display font-bold text-center text-slate-800 bg-slate-50 border-2 border-slate-300 rounded-xl focus:outline-none focus:border-violet-500 focus:bg-white transition-colors"
+                            onkeydown="if(event.key === 'Enter') { state.answered ? nextQuestion() : checkAnswer(); }">
+                    </div>
+                `;
+                setTimeout(() => document.getElementById('number-input')?.focus(), 50);
+            }
+        }
+
+        function toggleChip(num, btnElement) {
+            if (state.answered) return;
+            if (state.selectedChips.has(num)) {
+                state.selectedChips.delete(num);
+                btnElement.classList.remove('border-violet-600', 'bg-violet-100', 'text-violet-900', 'ring-2', 'ring-violet-200');
+                btnElement.classList.add('border-slate-200', 'bg-white', 'text-slate-700');
+            } else {
+                state.selectedChips.add(num);
+                btnElement.classList.remove('border-slate-200', 'bg-white', 'text-slate-700');
+                btnElement.classList.add('border-violet-600', 'bg-violet-100', 'text-violet-900', 'ring-2', 'ring-violet-200');
+            }
+        }
+
+        function showFeedback(isCorrect, title, explanation) {
+            const box = document.getElementById('feedback-box');
+            const icon = document.getElementById('feedback-icon');
+            const titleEl = document.getElementById('feedback-title');
+            const expEl = document.getElementById('feedback-explanation');
+
+            box.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-900', 'border', 'border-emerald-200', 'bg-rose-50', 'text-rose-900', 'border-rose-200', 'animate-shake', 'animate-pop');
+
+            if (isCorrect) {
+                box.classList.add('bg-emerald-50', 'text-emerald-900', 'border', 'border-emerald-200', 'animate-pop');
+                icon.textContent = '🎉';
+            } else {
+                box.classList.add('bg-rose-50', 'text-rose-900', 'border', 'border-rose-200', 'animate-shake');
+                icon.textContent = '🤔';
+            }
+
+            titleEl.textContent = title;
+            expEl.textContent = explanation;
+        }
+
+        function checkAnswer() {
+            if (state.answered) return;
+            const q = state.currentQuestion;
+            let isCorrect = false;
+            let wrongSummary = "";
+
+            if (q.type === 'list_input') {
+                const inputEl = document.getElementById('list-input');
+                const userNums = parseNumberList(inputEl.value);
+                if (userNums.length === 0) {
+                    inputEl.classList.add('animate-shake', 'border-rose-400');
+                    setTimeout(() => inputEl.classList.remove('animate-shake', 'border-rose-400'), 400);
+                    return;
+                }
+                inputEl.disabled = true;
+                isCorrect = arraysEqual(userNums, q.correctList);
+                wrongSummary = q.correctList.join(', ');
+
+                if (isCorrect) {
+                    inputEl.classList.add('border-emerald-500', 'bg-emerald-50/40');
+                } else {
+                    inputEl.classList.add('border-rose-500', 'bg-rose-50/40');
+                }
+
+            } else if (q.type === 'multi_chip') {
+                if (state.selectedChips.size === 0) {
+                    const container = document.getElementById('answer-container');
+                    container.classList.add('animate-shake');
+                    setTimeout(() => container.classList.remove('animate-shake'), 400);
+                    return;
+                }
+                const userSorted = Array.from(state.selectedChips).sort((a, b) => a - b);
+                isCorrect = arraysEqual(userSorted, q.correctList);
+                wrongSummary = q.correctList.join(', ');
+
+                document.querySelectorAll('.chip-btn').forEach(btn => {
+                    const num = parseInt(btn.getAttribute('data-num'), 10);
+                    btn.disabled = true;
+                    const isRealMult = q.correctList.includes(num);
+                    const wasPicked = state.selectedChips.has(num);
+
+                    btn.classList.remove('border-violet-600', 'bg-violet-100', 'text-violet-900', 'ring-2', 'ring-violet-200', 'border-slate-200', 'bg-white');
+
+                    if (isRealMult && wasPicked) {
+                        btn.classList.add('border-emerald-500', 'bg-emerald-100', 'text-emerald-900');
+                    } else if (isRealMult && !wasPicked) {
+                        btn.classList.add('border-amber-400', 'bg-amber-50', 'text-amber-900', 'border-dashed');
+                    } else if (!isRealMult && wasPicked) {
+                        btn.classList.add('border-rose-500', 'bg-rose-100', 'text-rose-900');
+                    } else {
+                        btn.classList.add('border-slate-200', 'bg-slate-50', 'opacity-50');
+                    }
+                });
+
+            } else if (q.type === 'single_number') {
+                const inputEl = document.getElementById('number-input');
+                const val = inputEl.value.trim();
+                if (!val) {
+                    inputEl.classList.add('animate-shake', 'border-rose-400');
+                    setTimeout(() => inputEl.classList.remove('animate-shake', 'border-rose-400'), 400);
+                    return;
+                }
+                inputEl.disabled = true;
+                isCorrect = (parseInt(val, 10).toString() === q.correctAnswer);
+                wrongSummary = q.correctAnswer;
+
+                if (isCorrect) {
+                    inputEl.classList.add('border-emerald-500', 'bg-emerald-50/40');
+                } else {
+                    inputEl.classList.add('border-rose-500', 'bg-rose-50/40');
+                }
+            }
+
+            state.answered = true;
+
+            if (isCorrect) {
+                state.streak += 1;
+                const bonus = state.streak >= 3 ? 15 : 10;
+                state.score += bonus;
+                updateScoreUI();
+                showFeedback(true, `Molt bé! (+${bonus} punts)`, q.explanation);
+
+                if (state.streak % 5 === 0 && typeof confetti === 'function') {
+                    confetti({ particleCount: 60, spread: 60, origin: { y: 0.7 } });
+                }
+            } else {
+                state.streak = 0;
+                updateScoreUI();
+                showFeedback(false, `Gairebé! La resposta correcta era: ${wrongSummary}`, q.explanation);
+            }
+
+            document.getElementById('check-btn').classList.add('hidden');
+            document.getElementById('next-btn').classList.remove('hidden');
+            document.getElementById('next-btn').focus();
+        }
+    </script>
+</body>
+</html>
